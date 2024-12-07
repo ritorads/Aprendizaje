@@ -1,0 +1,528 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{lipsum} % Para generar texto de ejemplo
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}     % Para personalizar los colores
+\usepackage{hyperref}   % Para los enlaces dentro del documento
+% Configuración del color de los enlaces
+\hypersetup{
+    colorlinks=true,           % Habilita el uso de colores
+    linkcolor=blue,           % Color para enlaces internos
+    citecolor=blue,           % Color para citas
+    filecolor=blue,           % Color para archivos
+    urlcolor=blue,            % Color para URLs
+    pdfborder={0 0 0}        % Sin bordes alrededor de los enlaces
+}
+% Configuración del estilo para el código en R
+\lstset{
+    language=R,                     % Especifica el lenguaje
+    basicstyle=\ttfamily\scriptsize, % Tamaño más pequeño (usa \tiny para aún más pequeño)
+    keywordstyle=\color{blue},       % Color para las palabras clave
+    commentstyle=\color{gray},       % Color para los comentarios
+    stringstyle=\color{red},         % Color para las cadenas de texto
+    breaklines=true,                 % Romper líneas largas automáticamente
+    frame=single,                    % Añadir un marco alrededor del código
+    numbers=left,                    % Mostrar los números de línea a la izquierda
+    numberstyle=\tiny,               % Tamaño de los números de línea
+    stepnumber=1,                    % Números de línea para cada línea
+    xleftmargin=2em,                 % Márgenes izquierdos para el código
+    xrightmargin=2em,
+    captionpos=b                     % Poner el título del código al final (b)
+}
+
+% Configuración de márgenes
+\geometry{a4paper, margin=1in}
+
+% Encabezado
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Tarea 2}
+\fancyhead[C]{Marcelo Morales, R. Andrés Diaz}
+
+% Configuración de título
+\title{Tarea 1}
+\author{Marcelo Morales, R. Andrés Diaz \\ \texttt{marcelo.morales2018@alu.uct.cl, ruben.diaz2017@alu.uct.cl}}
+\date{INFO1185, Semestre II-2024}
+
+\begin{document}
+
+\maketitle
+
+\section*{Resumen}
+Esta tarea tiene como objetivo resolver dos problemas mediante el uso de técnicas de inteligencia artificial. En la Parte A, se implementará un sistema de clasificación de carnes de porcino y vacuno usando redes neuronales en R Project. A partir de imágenes binarias de 7x7 capturadas por una cámara en una faja transportadora, el sistema debe clasificar las carnes, incluyendo posibles casos con marcas superpuestas. Se entrenará el modelo con el paquete neuralnet, utilizando el 80 por ciento de las imágenes para entrenamiento y el 20 por ciento para validación, y se evaluarán los resultados de la clasificación. La Parte B requiere el análisis y diseño de un agente informado basado en modelos para la distribución de paquetes en una bodega de productos no perecibles, utilizando reglas en Prolog y lógica proposicional y de primer orden. La tarea incluye tanto el diseño como la discusión de los resultados y la justificación de los métodos utilizados.
+
+
+\section{Introducción}
+n la actualidad, la inteligencia artificial (IA) juega un rol crucial en la automatización de procesos en diversas industrias, desde la manufactura hasta la logística. En este contexto, esta tarea se enfoca en el desarrollo de soluciones de IA aplicadas a dos problemas distintos. El primero, en el ámbito de la clasificación de carnes de porcino y vacuno en una faja transportadora, propone el uso de redes neuronales artificiales para procesar imágenes binarias y realizar clasificaciones precisas, lo que contribuye a la mejora de procesos productivos. El segundo, relacionado con la distribución de paquetes en bodegas, plantea el diseño de un agente inteligente que utiliza lógica deductiva y reglas en Prolog para optimizar el proceso de distribución de productos. Ambos problemas representan desafíos importantes en la automatización industrial y logística, y su solución permitirá explorar las capacidades de la IA para mejorar la eficiencia y precisión en estos campos.
+
+
+\section{Fundamentos de Teoría}
+
+\subsection{Redes Neuronales Artificiales (ANN)}
+Las redes neuronales artificiales son modelos computacionales inspirados en el cerebro humano, compuestas por capas de neuronas que procesan información. Incluyen:
+\begin{itemize}
+    \item \textbf{Capa de entrada:} Recibe los datos de entrada, como los píxeles de una imagen.
+    \item \textbf{Capas ocultas:} Realizan cálculos y aplican funciones de activación para aprender patrones complejos.
+    \item \textbf{Capa de salida:} Proporciona la clasificación final del modelo.
+\end{itemize}
+
+\subsection{Proceso de Entrenamiento y Evaluación del Modelo}
+El entrenamiento ajusta los pesos de las conexiones para minimizar el error entre predicciones y etiquetas reales. Utiliza el algoritmo de retropropagación, que aplica el descenso del gradiente para actualizar los pesos de forma iterativa.
+
+La clasificación de imágenes asigna etiquetas basadas en su contenido. Las imágenes se convierten en vectores para ser procesadas por la red, permitiendo al modelo reconocer características específicas y clasificarlas (por ejemplo, Vacuno o Porcino). 
+
+Las funciones de activación determinan la salida de cada neurona. Ejemplos comunes son:
+\begin{itemize}
+    \item \textbf{Sigmoide:} Útil para clasificación binaria.
+    \item \textbf{ReLU:} Mitiga el desvanecimiento del gradiente al permitir valores positivos.
+    \item \textbf{Softmax:} Convierte salidas en probabilidades para clasificación multiclase.
+\end{itemize}
+El rendimiento del modelo se evalúa mediante métricas como precisión, recall y F1-score, que ayudan a determinar la eficacia en la clasificación correcta de imágenes.
+
+\subsection{Prolog y Lógica Deductiva}
+Prolog es un lenguaje de programación basado en lógica, usado para representar y deducir conocimientos. Permite definir hechos y reglas, y realizar inferencias para resolver problemas complejos. En Prolog, los hechos representan información conocida (por ejemplo, la capacidad de una ubicación en la bodega), y las reglas definen cómo inferir nueva información a partir de los hechos.\\
+
+En el contexto de la distribución de paquetes, Prolog es útil porque permite definir relaciones entre los paquetes y las ubicaciones, como las capacidades de peso y volumen, o la compatibilidad de categorías. Su motor de inferencia se encarga de encontrar la mejor ubicación para cada paquete basándose en las restricciones definidas. 
+
+
+\section{Desarrollo del Trabajo}
+\subsection{Parte A}
+\subsubsection{Análisis del caso.}
+El caso proporcionado por la actividad nos pide un objetivo concreto, el cual es crear un modelo que sea capaz de observar imágenes en formato de matriz (Próximamente transformadas en vectores) y \textbf{categorizarlas de V o P según el caso}, al tratarse de un resultado binario (V o P, o 1 y 0) se puede abarcar de diferentes maneras ambas llegando al mismo objetivo pero por medios diferentes, para esto pasaremos al siguiente apartado.
+
+\subsubsection{Diseño del caso.}
+Existen dos enfoques eficientes para resolver el problema de clasificación. El primero consiste en entrenar un modelo que clasifique una etiqueta, por ejemplo, "Porcinos", y si no la identifica con alta seguridad, asignar automáticamente la clasificación de "Vacuno". El segundo enfoque, que será el utilizado, clasifica ambas etiquetas y asigna la que tenga mayor probabilidad. Esta opción permite una mejor comprensión de los resultados y es la más adecuada al trabajar con dos categorías distintas. Las imágenes usadas serán letras escritas manualmente en lienzos de 7x7 píxeles para aumentar el realismo en la predicción.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{V o P.png} 
+    \caption{ Ejemplos de imágenes manuales para Vacuno y Porcino.}
+    \label{fig:Vacuno_Porcino}
+\end{figure}
+
+\subsubsection{Preparación de datos.}
+Las imágenes que se utilizarán son de 7x7 pixeles, por lo que mediante la librería  \textbf{PNG de R}, pasaremos estas a matrices de 7 columnas y 7 filas, dándole el valor de 1 al color negro y 0 al color blanco, generando de esta manera la matriz que luego trabajaremos como un vector de 49 datos (los 7x7 pixeles de la imagen), esto ya que al armar nuestra ANN serán nuestros datos de entrada,\hyperref[lst:procesamiento_imagenes]{ \textbf{el proceso es realizado en el siguiente script}}, además, se debe recalcar que como se describió en el análisis del modelo, existe la posibilidad de superponer las etiquetas, por lo que al generar estas (con 1 o 0 al ser sólo dos opciones), mantendremos un pequeño margen de error al categorizarlas, cumpliendo con este requerimiento.\\
+\\
+Una vez trabajadas todas las imágenes y transformadas en vectores, para poder ser utilizadas luego en la librería  \textbf{neuralnet} debemos manejar nuestros datos como Dataframes, por lo que crearemos uno donde además también categorizaremos con nuevos nombres las columnas para un mejor entendimiento a la hora de generar la ANN, tal como se enseña en \hyperref[lst:dataframe_vectores_etiquetas]{\textbf{el siguiente extracto de código}}, de esta manera tenemos todo nuestro \textbf{Data} necesario para comenzar a trabajar con nuestro modelo.\\
+\\
+El último paso antes de comenzar a desarrollar nuestro modelo de red neuronal es separar los subconjuntos que utilizaremos tanto para entrenar y predecir, para los cuales separaremos en 80 y 20 para entrenamiento y predicción respectivamente, tal como se enseña en \hyperref[lst:division_datos]{ \textbf{el siguiente apartado}}, recalcando que estos también deberán ser Dataframes como nuestro conjunto original de Data.
+
+
+\subsubsection{Arquitectura ANN Y Gráfico del modelo.}
+Con los datos estructurados y listos para la red neuronal artificial (ANN), se procede a diseñar el modelo. Como se explicó, hay dos enfoques para la categorización, por lo que se presentarán dos propuestas de solución. Ambos modelos tendrán una sola capa oculta con 5 neuronas, debido a la simplicidad del problema, lo que es suficiente para lograr un buen rendimiento sin necesidad de más neuronas.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{OPCION1_DIAGRAMA.drawio.png} 
+    \caption{ Opción 1 para modelo de ANN}
+    \label{fig:Vacuno_Porcino}
+\end{figure}
+\\
+El primer modelo utiliza como entrada los 49 valores de la imagen, que pasan por una capa oculta de 5 neuronas y luego a una salida única. Aunque este modelo puede categorizar, su funcionamiento se limita a "Es Porcino, si no es, entonces es Vacuno", descartando una etiqueta y asignando la otra. Aunque es funcional para este caso, no es la opción más óptima, ya que no clasifica ambos tipos de carne directamente.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{OPCION2_DIAGRAMA.drawio.png} 
+    \caption{ Opción 2 para modelo de ANN}
+    \label{fig:Vacuno_Porcino}
+\end{figure}
+\\
+\\
+Pasamos al segundo modelo que se puede ver en la imagen, y el que utilizaremos para desarrollar nuestro entrenamiento y posterior predicción, el cual tendrá como diferencia 2 outputs, los cuales sí cumplirán con la capacidad de categorizar ambos tipos y luego mediante probabilidad mayor, elegir la correcta. \\
+\\
+Con el modelo definido, pasamos a montarlo en R mediante la librería neuralnet, definiendo las etiquetas que previamente generamos, además de los inputs de los 49 datos del vector, \hyperref[lst:modelo_red_neuronal]{\textbf{quedando de la siguiente manera.}}
+
+\subsubsection{Resultados.}
+Ahora que nuestro modelo está trabajando y prediciendo, tenemos que analizar los resultados, como se explicó en el detalle del proyecto, existía una posibilidad de que las carnes estuvieran mal etiquetadas una vez pasaban por la cinta, por lo que este dato puede influir considerablemente, como se ve en la siguiente imagen, a la izquierda se ve con la probabilidad de fallar la etiqueta de 5, mientras que a la derecha con 10, las cuales varían de predecir correctamente en su totalidad, a solo en un 85 por ciento.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{Probabilidades.png} 
+    \caption{ Resultados predicción según probabilidad de error de etiqueta.}
+    \label{fig:Vacuno_Porcino}
+\end{figure}\\
+Para un mejor funcionamiento de la red, dejaremos para el caso el de 5 de probabilidad de falla, resultando esta rede neuronal junto a sus pesos, como se puede apreciar en la imagen, las 5 neuronas elegidas en un comienzo en el planteamiento fueron suficientes para entrenar el modelo y predecir de manera correcta, siendo el único motivo externo a que baje su eficiencia, el error humano de categorizar las etiquetas.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{plot.png} 
+    \caption{ Resultados en red neuronal junto a sus pesos.}
+    \label{fig:Vacuno_Porcino}
+\end{figure}\\
+
+\subsubsection{Caso propuesto.}
+
+Si se entrena el modelo con solo una imagen, este no podría predecir correctamente, sino únicamente identificar esa imagen específica. El modelo no funcionaría para generalizar otros casos. Sin embargo, dado que hay solo dos etiquetas, podría predecir correctamente la mitad de los casos por azar, asignando todas las predicciones a una misma clase. Esto no sería una verdadera predicción, sino simplemente un efecto del azar, como se muestra en el ejemplo.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Caso_Propuesto.png} 
+    \caption{ Resultados predicciones con modelo entrenado por 1 imagen}
+    \label{fig:Vacuno_Porcino}
+\end{figure}
+
+\subsubsection{Reflexión clasificación.}
+En contexto de la funcionalidad del caso, el modelo creado sí cumple con lo requerido en un alto porcentaje de efectividad, incluso si se hubiese utilizado el modelo de sólo una salida estaría correcto, al tratarse de una categorización de sólo 2 opciones, sin embargo, el modelo utilizado es el correcto, esto debido a que al entrenar dos salidas y luego comparar las probabilidades, con un buen dataset de imágenes para entrenar (como es el caso), satisface la necesidad del proyecto.
+
+\subsection{Parte B}
+
+\subsubsection{Análisis del Caso}
+En el marco de la Actividad dada la parte B, se nos solicita diseñar un agente inteligente basado en modelos, para resolver un problema de distribución de paquetes en una bodega de productos no perecibles.\\
+Para ello:
+\begin{itemize}
+    \item Tener en cuenta un agente tipo Deductivo.
+    \item Diseño de las reglas en Prolog.
+\end{itemize}
+
+\subsubsection{Diseño del Caso}
+
+Para abordar la problemática mencionada, se propone un agente inteligente deductivo, que pueda tomar decisiones de manera autónoma. Este agente se encargará de la asignación óptima de ubicaciones para los diversos paquetes en la bodega, considerando restricciones de peso, volumen y compatibilidad entre categorías.\\
+El agente se basa en un modelo REAS (Razonamiento, Entorno, Actuación, Sensores), donde:
+\begin{itemize}
+    \item \textbf{Razonamiento (R):} Utiliza lógica deductiva en Prolog para gestionar la distribución de paquetes.
+    \item \textbf{Entorno (E):} Representa la bodega con múltiples estantes y paquetes, definidos mediante hechos y predicados.
+    \item \textbf{Actuación (A):} Realiza acciones como asignar ubicaciones, manejar paquetes vencidos y clasificar productos.
+    \item \textbf{Sensores (S):} Obtiene información del entorno mediante consultas a la base de datos de hechos.
+\end{itemize}
+
+Además, se incluyen productos que no entran en la categoria de alimentos no perecibles, con la idea de complejizar y hacer más realista el modelo, también agregamos la idea de mermas productos para aplicar mas cálculos y la distribución por pisos y pesos límite por estante.\\
+
+\subsubsection{Hechos y Reglas en Prolog}
+
+Los hechos en este caso, representan información estática del problema, como las ubicaciones de la bodega, las capacidades de cada estante, los tipos de productos y las restricciones de compatibilidad. 
+Por otro lado, las reglas en Prolog nos permiten deducir cómo se deben distribuir los paquetes, considerando los siguientes aspectos:
+\begin{itemize}
+    \item Compatibilidad entre productos: Algunos productos no pueden estar en la misma ubicación, por lo que se deben asignar a estantes diferentes. 
+    Esto se puede representar mediante "incompatibles(Categoria\_1, Categoria\_2).".
+    \item Capacidad de Peso y Volumen: Cada estante tiene una capacidad máxima de peso y volumen, por lo que se deben asignar los paquetes de manera que no se excedan estos límites.
+    Para evaluar se utiliza la Regla, "cumpleRequisitos(Peso, Dimensión, Ubicación).".
+    \item Vencimiento de productos:  Los productos con fecha de expiración vencida se envían automáticamente a una sección de "mermas".
+    Esto se evalúa mediante la regla, "esVencido('id').".
+\end{itemize}
+\newpage
+\subsubsection{Modelo REAS (Razonamiento, Entorno, Actuación, Sensores)}
+
+\paragraph{Razonamiento (R)}
+El agente utiliza \textbf{razonamiento deductivo} en Prolog para gestionar la distribución de paquetes. El razonamiento se realiza a través de reglas como:
+\begin{itemize}
+    \item \texttt{asignarUbicacion(ID)}: Decide dónde ubicar cada paquete, evaluando las restricciones de peso, volumen y compatibilidad. \hyperref[lst:asignarUbicacion]{ \textbf{Véase en el script}}
+    \item \texttt{clasificarPeso(Peso, CategoriaPeso)}: Clasifica los paquetes según su peso para asignarles un estante adecuado.
+    \hyperref[lst:clasificarPeso]{ \textbf{Véase en el script}}
+    \item \texttt{cumpleRequisitos(Peso, Dimensiones, Ubicacion)}: Evalúa si una ubicación cumple con los requisitos para almacenar un paquete específico.
+    \hyperref[lst:cumpleRequisitos]{ \textbf{Véase en el script}}
+\end{itemize}
+
+\paragraph{Entorno (E)}
+El \textbf{entorno} es la bodega con múltiples estantes que varían en capacidad de peso y volumen. Estos estantes y paquetes están representados mediante hechos y predicados como:
+\begin{itemize}
+    \item \texttt{ubicacion(ID, Tipo, Carga, CapacidadPeso, CapacidadVolumen, CategoriaPeso)}: Define cada estante, especificando su categoría, capacidad y clasificación de peso.
+    \item \texttt{paquete(ID, Peso, Dimensiones, Categoria, FechaExpiracion, UbicacionActual)}: Describe cada paquete, con atributos como peso, dimensiones, categoría y ubicación actual.
+\end{itemize}
+
+\paragraph{Actuación (A)}
+Las acciones que realiza el agente incluyen:
+\begin{itemize}
+    \item \texttt{actualizacionUbicacion(ID, NuevaUbicacion)}: Mueve un paquete a un estante adecuado y actualiza la carga del estante.
+    \hyperref[Véase en el script}}
+    \item \texttt{manejarVencimiento(ID)}: Identifica paquetes vencidos y los traslada a la zona de mermas.
+    
+    \item \texttt{asignarPaquetes}: Itera sobre todos los paquetes sin ubicar para asignarles una ubicación en la bodega.
+    \hyperref[lst:asignarPaquetes]{ \textbf{Véase en el script}}
+\end{itemize}
+
+\paragraph{Sensores (S)}
+El agente obtiene información del entorno mediante consultas a la base de datos de hechos, que actúan como sus \textbf{sensores}:
+\begin{itemize}
+    \item \texttt{pesoDisponible(Ubicacion, PesoDisponible)}: Evalúa cuánta capacidad de peso queda en un estante específico.
+    \item \texttt{volumenDisponible(Ubicacion, VolumenDisponible)}: Verifica cuánto volumen está disponible en una ubicación dada.
+    \hyperref[lst:volumenDisponible]{ \textbf{Véase en el script}}
+    \item \texttt{esVencido(ID)}: Comprueba si un paquete ha superado su fecha de expiración.
+\end{itemize}
+
+\subsubsection{Modelado y Resultados}
+
+Hemos realizado una ilustración del modelo, \hyperref[fig:modelo_1]{ubicada en el anexo.}
+
+\subsubsection{Análisis de los Resultados}
+
+Resultados de la ejecución 1, 
+\hyperref[fig:asignarPaquetes]{"asignarPaquetes."}\\
+
+En las ejecuciones realizadas, se puede observar que la asignación de los paquetes ha sido basada en sus características obtenidas. Lo que hace que el método de clasificación sea bastante efectivo.\\
+
+Los paquetes como "arroz" y "tallarines", se asignan según el peso mientras que las mermas o vencidos, van directo al depósito sin clasificar, para evitar redundar en recursos.\\
+
+Finalmente se puede observar que no se mezclan los artículos que no son compatibles entre sí, como lo son leche y cloro, por ejemplo, por lo que podemos asegurar que la reasignación funciona completamente bien en su entorno, lo que la hace bastante escalable, dado que solo recibe datos etiquetados que puede realizar el mismo agente en el proceso, aplicando algunos sensores extras.\\
+
+Resultados de la ejecución 2, 
+\hyperref[fig:detallesEstantes]{"mostrarDetallesEstantes." }\\
+
+En esta ejecución, se muestran los detalles de cada estante luego de la asignación de los paquetes. Se puede observar la carga actual de cada estante, la capacidad de peso y volumen disponible, así como la categoría y peso de los productos asignados.\\
+
+Los resultados evidencian que el agente sigue correctamente las reglas de clasificación para cada producto, asignándolos a ubicaciones compatibles y que cumplen con los requisitos de capacidad. Además, se observa que el volumen y peso de los estantes se gestiona de manera eficiente, garantizando una correcta organización y evitando cualquier conflicto de almacenamiento que pueda existir.
+
+\section{Discusión y Reflexión}
+
+\subsubsection{Parte A}
+
+\subsubsection{Parte B}
+En la parte B del trabajo, se diseñó un agente inteligente basado en Prolog, para distribuir paquetes dentro de una bodega. Este agente utiliza lógica deductiva para tomar decisiones, lo cual demostró ser muy efectivo para problemas que requieren evaluaciones basadas en restricciones, esto por ejemplo, el peso, volumen y compatibilidad entre productos. Por otro lado, lo que se pudo inferir de la implementación es que si bien es efectiva en su entorno, es solo en ese entorno, por lo que si aumentamos la cantidad de datos, el modelo seguirá funcionando perfectamente, hasta que haya necesidad de ajustar parámetros como capacidades de almacenamiento, o inclusión de nuevos estantes o categorías, lo que nos dice que no es muy susceptible a nuevos ajustes, por lo que hay que cambiar las reglas o incluir de forma manual. 
+
+\section{Conclusiones}
+\subsubsection{Marcelo Morales}
+
+\subsubsection{R. Andrés Díaz Sandoval}
+El desarrollo e investigación realizada en el presente informe, nos ha dado herramientas de acercamientos a mercados reales, donde podemos observar los diversos tipos de agentes funcionando en un entorno real, por ejemplo en el caso B, donde se le da un medioAmbiente, Sensores y acciones, lo que lo hace real, puesto que las mismas funcionalidades se pueden obtener de un modelo físico, destacar que el uso de agentes inteligentes en diferentes procesos, optimiza y acelera los dichos anteriores, dado que el agente utiliza la información que consigue para razonar y tomar decisiones en base a su propia inferencia, lo que los hace bastante escalables en muchos de los casos. Como opinión personal el uso de prolog para definir este tipo de agente no extrae el máximo provecho, dado que se limita a las reglas y hechos predefinidos, además que no es el lenguaje mas rápido que hemos utilizado para los cálculos matemáticos, lo que nos dice inmediatamente que a mayor cantidad de datos, será menor su rendimiento.
+
+\begin{thebibliography}{9}
+    \bibitem{ref1}
+    SWI-Prolog -- Getting started quickly. (n.d.). https://www.swi-prolog.org/pldoc/man?section=quickstart
+    
+    \bibitem{ref2}
+    Alonso Jiménez, J. A., Cordón Franco, A., \& Hidalgo Doblado, M. J. (2015-2016)Introducción a la programación lógica con Prolog1. Grupo de Lógica Computacional, Departamento de Ciencias de la Computación e I.A., Universidad de Sevilla
+    
+    \bibitem{ref3}
+    Charte, F. (n.d.). Tutorial básico sobre redes neuronales y R. Recuperado de https://fcharte.com/tutoriales/20160203-R-RedesNeuronales/.
+    
+    \bibitem{ref4}
+    Hatwell, J. (n.d.). Artificial Neural Networks in R. Recuperado de https://rpubs.com/julianhatwell/annr.
+    
+\end{thebibliography}
+\newpage
+\section{Anexos}
+
+\subsection{Parte A: R Project}
+% Insertar el código con un título y etiqueta para referenciar
+\begin{lstlisting}[caption={Procesamiento de imágenes en R}, label={lst:procesamiento_imagenes}]
+# Obtener la lista de archivos
+archivos_png <- list.files(directorio_imagenes, pattern = "*.png", full.names = TRUE)
+
+vectores_imagenes <- list()
+etiquetas_imagenes <- c() 
+
+# Procesar las imagenes
+for (archivo in archivos_png) {
+  
+  imagen <- readPNG(archivo)
+  
+  grayscale <- imagen[,,1]  
+  
+  # Binarizar la imagen (0 para blanco, 1 para negro)
+  matriz_p <- ifelse(grayscale < 0.5, 1, 0)
+  
+  # Convertir la matriz de 7x7 en un vector de 49 elementos
+  vector_p <- as.vector(matriz_p)
+  
+  # Agregar el vector a la lista
+  vectores_imagenes[[archivo]] <- vector_p
+  
+  probabilidad_error <- runif(1)  
+  
+  if (grepl("^P_", basename(archivo))) {
+    if (probabilidad_error <= 0.00) {
+      etiquetas_imagenes <- c(etiquetas_imagenes, c(0, 1))  # Etiqueta incorrecta (0 para V, 1 para P)
+    } else {
+      etiquetas_imagenes <- c(etiquetas_imagenes, c(1, 0))  # Etiqueta correcta (1 para P)
+    }
+  } else if (grepl("^V_", basename(archivo))) {
+    if (probabilidad_error <= 0.00) {
+      etiquetas_imagenes <- c(etiquetas_imagenes, c(1, 0))  # Etiqueta incorrecta (1 para P, 0 para V)
+    } else {
+      etiquetas_imagenes <- c(etiquetas_imagenes, c(0, 1))  # Etiqueta correcta (0 para V)
+    }
+  }
+}
+\end{lstlisting}
+
+% Insertar el nuevo fragmento de código con una etiqueta
+
+\begin{lstlisting}[caption={Manejo de vectores y etiquetas en un data frame}, label={lst:dataframe_vectores_etiquetas}]
+# lista de vectores en un data frame
+df_vectores <- do.call(rbind, vectores_imagenes)
+
+# etiquetas a un data frame
+df_etiquetas <- data.frame(etiqueta = matrix(etiquetas_imagenes, ncol = 2, byrow = TRUE))
+
+# Combinar vectores y etiquetas en un solo data frame
+df_completo <- cbind(df_vectores, df_etiquetas)
+
+# Manejo de Enteros
+df_completo[1:49] <- lapply(df_completo[1:49], as.integer)
+
+# Renombrar las columnas del 1 al 49 a X1, X2, etc
+names(df_completo)[1:49] <- paste0("X", 1:49)
+names(df_completo)[50:51] <- c("Porcinos", "Vacunos")
+\end{lstlisting}
+\newpage
+
+% Insertar el código para dividir los datos en entrenamiento y prueba
+
+\begin{lstlisting}[caption={División de los datos en conjuntos de entrenamiento y prueba}, label={lst:division_datos}]
+# Dividir los datos en entrenamiento y prueba
+n <- nrow(df_completo)
+train_indices <- sample(1:n, size = round(0.8 * n))  # 80% entrenamiento
+
+train_data <- df_completo[train_indices, ]
+test_data <- df_completo[-train_indices, ]
+str(train_data)
+\end{lstlisting}
+
+% Insertar el bloque de código para crear el modelo y realizar predicciones
+
+\begin{lstlisting}[caption={Creación del modelo de red neuronal y predicciones}, label={lst:modelo_red_neuronal}]
+# Crear el modelo de red neuronal con dos nodos de salida
+modelo <- neuralnet(Porcinos + Vacunos ~ ., data = train_data, hidden = c(5), linear.output = FALSE)
+
+# predicciones en el conjunto de prueba
+predicciones <- predict(modelo, newdata = test_data)
+
+# Convertir las predicciones a clases (0 o 1)
+predicciones_clasificadas <- ifelse(predicciones[, 1] > 0.5, 1, 0)  # Porcinos
+predicciones_clasificadas_vacunos <- ifelse(predicciones[, 2] > 0.5, 1, 0)  # Vacunos
+\end{lstlisting}
+
+
+\subsection{Parte B: Agente Prolog}
+
+\begin{lstlisting}[language=Prolog, caption={Asignacion de ubicaciones para los paquetes}, label={lst:asignarUbicacion}]]
+    asignarUbicacion(ID) :-
+    paquete(ID, Peso, Dimensiones, CategoriaPaq, _, sin_ubicar),
+    manejarVencimiento(ID),
+    (   \+ esVencido(ID) ->
+            clasificarPeso(Peso, CategoriaPeso),
+            findall(Ubicacion, (
+                ubicacion(Ubicacion, Categoria, _, _, _, CategoriaPesoEstante),
+                sonCompatibles(CategoriaPaq, Categoria),
+                CategoriaPesoEstante = CategoriaPeso,
+                cumpleRequisitos(Peso, Dimensiones, Ubicacion)
+            ), UbicacionesDisponibles),
+            sort(UbicacionesDisponibles, UbicacionesOrdenadas),
+            (   UbicacionesOrdenadas \= [] ->
+                    UbicacionesOrdenadas = [PrimeraUbicacion | _],
+                    actualizacionUbicacion(ID, PrimeraUbicacion),
+                    write('El paquete '), write(ID), write(' ha sido asignado a la ubicacion '), write(PrimeraUbicacion), nl
+                ;
+                    write('No hay ubicaciones disponibles para el paquete '), write(ID), nl
+            )
+        ;   true
+    ).
+
+\end{lstlisting}
+
+
+\begin{lstlisting}[language=Prolog, caption={Clasificar el peso de un paquete}, label={lst:clasificarPeso}]]
+clasificarPeso(Peso, CategoriaPeso) :-
+    (   Peso =< 5
+    ->  CategoriaPeso = liviano
+    ;   
+        Peso =< 50
+    ->  CategoriaPeso = medio
+    ;   
+        CategoriaPeso = pesado).
+
+\end{lstlisting}
+
+\begin{lstlisting}[language=Prolog, caption={Verificar si una ubicación cumple con los requisitos de un paquete}, label={lst:cumpleRequisitos}]]
+cumpleRequisitos(Peso, (Ancho, Alto, Profundidad), Ubicacion) :-
+    pesoDisponible(Ubicacion, PesoDisponible),
+    Peso =< PesoDisponible,
+    volumenDisponible(Ubicacion, VolumenDisponible),
+    Volumen is Ancho * Alto * Profundidad,
+    Volumen =< VolumenDisponible.
+
+
+\end{lstlisting}
+
+\begin{lstlisting}[language=Prolog, caption={Actualizar ubicación de un paquete}, label={lst:actualizacionUbicacion}]]
+actualizacionUbicacion(ID, NuevaUbicacion) :-
+    paquete(ID, Peso, Dimensiones, Categoria, FechaExpiracion, UbicacionActual),
+    retract(paquete(ID, Peso, Dimensiones, Categoria, FechaExpiracion, UbicacionActual)),
+    assert(paquete(ID, Peso, Dimensiones, Categoria, FechaExpiracion, NuevaUbicacion)),
+
+    % Si la ubicacion actual no es 'sin_ubicar', actualiza la carga
+    (UbicacionActual \= sin_ubicar ->
+        retract(ubicacion(UbicacionActual, Categoria, CargaActual, CapacidadPesoActual, CapacidadVolumenActual, CategoriaPesoActual)),
+        CargaNuevaActual is CargaActual - Peso,
+        assert(ubicacion(UbicacionActual, Categoria, CargaNuevaActual, CapacidadPesoActual, CapacidadVolumenActual, CategoriaPesoActual))
+    ; true),
+    % Si la nueva ubicacion es 'estmermas', actualiza la carga
+    (NuevaUbicacion = estmermas ->
+        retract(ubicacion(NuevaUbicacion, CategoriaMermas, CargaMermas, CapacidadPesoMermas, CapacidadVolumenMermas, CategoriaPesoMermas)),
+        CargaMermasActualizada is CargaMermas + Peso,
+        assert(ubicacion(NuevaUbicacion, CategoriaMermas, CargaMermasActualizada, CapacidadPesoMermas, CapacidadVolumenMermas, CategoriaPesoMermas))
+    ; true),
+
+    % Si la nueva ubicacion no es 'sin_ubicar' ni 'estmermas', actualiza la carga
+    (NuevaUbicacion \= sin_ubicar, NuevaUbicacion \= estmermas ->
+        retract(ubicacion(NuevaUbicacion, Categoria, CargaNueva, CapacidadPesoNueva, CapacidadVolumenNueva, CategoriaPesoEstante)),
+        CargaActualNueva is CargaNueva + Peso,
+        assert(ubicacion(NuevaUbicacion, Categoria, CargaActualNueva, CapacidadPesoNueva, CapacidadVolumenNueva, CategoriaPesoEstante))
+    ; true).
+
+\end{lstlisting}
+\begin{lstlisting}[language=Prolog, caption={ Asignar ubicación a los paquetes}, label={lst:asignarPaquetes}]]
+asignarPaquetes :-
+    findall(ID, paquete(ID, _, _, _, _, sin_ubicar), Paquetes),
+    forall(member(ID, Paquetes), asignarUbicacion(ID)).
+
+% Asignar ubicacion
+asignarUbicacion(ID) :-
+    paquete(ID, Peso, Dimensiones, CategoriaPaq, _, sin_ubicar),
+    nl, write('Asignando ubicacion al paquete '), write(ID), nl,
+    manejarVencimiento(ID),
+    (   \+ esVencido(ID) ->
+            clasificarPeso(Peso, CategoriaPeso),
+            % Filtrar ubicaciones compatibles y que cumplan con los requisitos
+            findall(Ubicacion, (
+                ubicacion(Ubicacion, Categoria, _, _, _, CategoriaPesoEstante),
+                sonCompatibles(CategoriaPaq, Categoria),
+                CategoriaPesoEstante = CategoriaPeso,
+                cumpleRequisitos(Peso, Dimensiones, Ubicacion)
+            ), UbicacionesDisponiblesOrdenadas),
+            sort(UbicacionesDisponiblesOrdenadas, UbicacionesDisponibles),
+            (   UbicacionesDisponibles \= [] ->
+                    % Asignar al primer estante disponible
+                    UbicacionesDisponibles = [PrimeraUbicacion | _],
+                    actualizacionUbicacion(ID, PrimeraUbicacion),
+                    write('El paquete '), write(ID), write(' ha sido asignado a la ubicacion '), write(PrimeraUbicacion), nl
+                ;
+                    write('No hay ubicaciones disponibles para el paquete '), write(ID), nl
+            )
+        ;   true
+    ).
+
+
+\end{lstlisting}
+\begin{lstlisting}[language=Prolog, caption={ Verificar si hay suficiente volumen disponible en una ubicación}, label={lst:volumenDisponible}]]
+
+volumenDisponible(Ubicacion, VolumenDisponible) :-
+    ubicacion(Ubicacion, _, _, _, CapacidadVolumen, _),
+    findall(Volumen, (
+        paquete(_, _, (Ancho, Alto, Profundidad), _, _, Ubicacion), 
+        Volumen is Ancho * Alto * Profundidad
+    ), Volumenes),
+    sum_list(Volumenes, VolumenOcupado),
+    VolumenDisponible is CapacidadVolumen - VolumenOcupado.
+
+\end{lstlisting}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{modelo_agente.png}
+    \caption{Bosquejo del modelo}
+    \label{fig:modelo_1}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{resultado_1.png}
+    \caption{Resultados asignarPaquetes.}
+    \label{fig:asignarPaquetes}
+\end{figure}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{resultado_2.png}
+    \caption{Resultado mostrarDetallesEstantes.}
+    \label{fig:detallesEstantes}
+\end{figure}
+\end{document}
