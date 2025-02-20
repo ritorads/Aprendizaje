@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">   
+
+    <title>Home</title>
+</head>
+<body class = "home">
+    {% extends 'base.html' %}
+    {% block title %}Home{% endblock %}
+    {% block content %}
+        
+        <div class="header">
+            <h1>Bienvenido, {{ username }}!</h1>
+            <h1>Inicio</h1>
+        
+            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+
+        <div class="container">
+            <div class="card">
+                <h2>Usuarios</h2>
+                <p>Administra los usuarios de la aplicación</p>
+                <a href="{{ url_for('usuarios_psqlflask')}}">Ir a usuarios</a>
+            </div>
+        </div>
+    {% endblock %}
+</body>
+</html>
+
+
+<!DOCTYPE html>
