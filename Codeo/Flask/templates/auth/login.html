@@ -1,28 +1,20 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
-
-  <title>Login - Mi App</title>
-  
-</head>
-<body>
-  <div class="login-container">
-    <h2>Iniciar Sesión</h2>
-    <form method="POST" action="/login">
-      <label for="username">Usuario</label>
-      <input type="text" id="username" name="username" required>
-      
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" name="password" required>
-      
-      <button type="submit">Ingresar</button>
-    </form>
-    <div class="links">
-      <p><a href="/register">Registrarse</a></p>
+{%extends 'base/base.html'%}
+{% block content %}
+  <div class="register-container">
+      <h2>Iniciar Sesión</h2>
+      <form method="POST" action="/login">
+        <label for="username">Usuario</label>
+        <input type="text" id="username" name="username" required>
+        
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">Ingresar</button>
+      </form>
+      <div class="links">
+        <p><a href="/register">Registrarse</a></p>
+      </div>
     </div>
-  </div>
-</body>
-</html>
+  </body>
+  </html>
+{% endblock %}

@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Bienvenido a la App</h1>
-        <a href="{{ url_for('login') }}" class="button">Iniciar Sesión</a>
-        <a href="{{ url_for('register') }}" class="button">Registrarse</a>
-    </div>
-</body>
-</html>
+{% extends 'base/base.html' %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+    <h1>Bienvenido a Mi App</h1>
+    <p>
+        <a href="{{ url_for('auth.login') }}">Iniciar sesión</a> |
+        <a href="{{ url_for('auth.register') }}">Registrarse</a>
+    </p>
+{% endblock %}
