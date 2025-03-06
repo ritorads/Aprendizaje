@@ -1,0 +1,242 @@
+/* Estilos Generales */
+html, body {
+    height: 100%;          /* Asegura que el cuerpo ocupa toda la altura */
+    margin: 0;             /* Elimina márgenes por defecto */
+    padding: 0;            /* Elimina el padding por defecto */
+    overflow-x: hidden;    /* Evita el desplazamiento horizontal */
+}
+
+.content {
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: calc(100% - 56px); /* Resta la altura de la barra de navegación */
+    box-sizing: border-box;/* Incluye el padding en el cálculo de la altura */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Estilos de la Navegación */
+nav.navbar {
+    background-color: #007bff;
+    padding: 1rem;
+}
+
+nav.navbar ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+nav.navbar ul li {
+    margin-right: 20px;
+}
+
+nav.navbar ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav.navbar ul li a:hover {
+    color: #ddd;
+}
+
+/* Estilos de la Tabla y Contenido Principal */
+.content {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+/* Tabla de usuarios */
+.table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Estilos para Formulario */
+form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button,
+.btn {
+    width: 30%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover,
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos para mensajes flash */
+.flash {
+    color: red;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.alert.success {
+    background-color: #28a745;
+    color: white;
+}
+
+.alert.danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.alert.warning {
+    background-color: #ffc107;
+    color: white;
+}
+
+.alert.info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+/* Estilos del Footer */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Estilos para el Contenedor de Login y Registro */
+.login-container,
+.register-container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Títulos en Login y Registro */
+.login-container h2,
+.register-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilo para enlaces dentro del login */
+.login-container .links,
+.register-container .links {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Mensajes de Error en el Login */
+.login-container .flash,
+.register-container .flash {
+    color: red;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+
+
+/* Botones del menú */
+.menu_gastos {
+    margin-top: 20px;
+}
+
+.menu_gastos button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.menu_gastos button:hover {
+    background-color: #0056b3;
+}
+
+/* Clase para ocultar el formulario dinámicamente */
+.hidden {
+    display: none;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    }
+    
+    .div1 { grid-area: 1 / 1 / 2 / 4; }

@@ -1,0 +1,9 @@
+{% extends 'base/base.html' %}
+{% block title %}Inicio{% endblock %}
+{% block content %}
+    <h1>Bienvenido a Mi App</h1>
+    <p>
+        <a href="{{ url_for('auth.login') }}">Iniciar sesión</a> |
+        <a href="{{ url_for('auth.register') }}">Registrarse</a>
+    </p>
+{% endblock %}
