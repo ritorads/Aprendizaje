@@ -38,13 +38,21 @@ def gastos():
 @gastos_bp.route("/gastos/filtrar", methods=["GET"])
 @login_required
 def filtrar_gastos():
-    selected = request.args.get("categoria")
+    selected = request.args.get("categoria")  # Ajusta si el param se llama 'categoria' o 'cadtegoria'
+    
+    # Si se seleccionó una categoría, filtra por ella y por el usuario actual
     if selected:
-        gastos_lista = Gasto.query.filter_by(categoria=selected).all()
+        gastos_lista = Gasto.query.filter(
+            Gasto.Id_usuario == current_user.id,
+            Gasto.categoria == selected
+        ).all()
     else:
-        gastos_lista = Gasto.query.all()
-    # Renderiza un fragmento HTML (una tabla o solo el tbody) con los gastos filtrados.
+        # De lo contrario, muestra todos los gastos del usuario
+        gastos_lista = Gasto.query.filter_by(Id_usuario=current_user.id).all()
+
+    # Renderiza el fragmento HTML (p. ej., la tabla o solo el tbody)
     return render_template("gastos/tabla_gastos.html", gastos=gastos_lista)
+
 
 
 @gastos_bp.route("/add_gasto", methods=["POST"])
