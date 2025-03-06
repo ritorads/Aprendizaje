@@ -1,0 +1,160 @@
+<div class="container mt-3">
+    <h2>Gastos</h2>
+
+    <!-- Formulario para seleccionar la opción -->
+    <form method="POST" action="{{ url_for('gastos.gastos', vista= categorias, opcion=opcion) }}">
+        <div class="mb-3">
+            <label for="opcion" class="form-label">Selecciona la opción:</label>
+            <select name="opcion" id="opcion" class="form-select" onchange="this.form.submit()">
+                <option value="1" {% if opcion == '1' %}selected{% endif %}>Gastos Crédito</option>
+                <option value="2" {% if opcion == '2' %}selected{% endif %}>Gastos Compartidos</option>
+                <option value="3" {% if opcion == '3' %}selected{% endif %}>Gastos Propios</option>
+                <option value="4" {% if opcion == '4' %}selected{% endif %}>Todos los Gastos</option>
+            </select>
+        </div>
+    </form>
+
+    <section id="contenido">
+
+        {% if opcion == '1' %}
+            <h3>Gastos Crédito</h3>
+            <table class="table table-hover table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Gasto</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Cuotas</th>
+                        <th>P. cuota</th>
+                        <th>U. cuota</th>
+                        <th>Descripción</th>
+                        <th>Categoría</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gasto in gastos_credito %}
+                    <tr data-id="{{ gasto.id }}">
+                        <td>{{ gasto.nombre }}</td>
+                        <td>{{ gasto.monto }}</td>
+                        <td>{{ gasto.fecha.strftime('%d/%m/%Y') if gasto.fecha else '' }}</td>
+                        <td>{{ gasto.cuotas }}</td>
+                        <td>{{ gasto.primera_cuota.strftime('%d/%m/%Y') if gasto.primera_cuota else '' }}</td>
+                        <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
+                        <td>{{ gasto.descripcion }}</td>
+                        <td>{{ gasto.categoria }}</td>
+                        <td>
+                            <!-- Botones para acciones, por ejemplo: -->
+                            <button class="btn btn-danger btn-sm">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif opcion == '2' %}
+            <h3>Gastos Compartidos</h3>
+            <table class="table table-hover table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Gasto</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Cuotas</th>
+                        <th>P. cuota</th>
+                        <th>U. cuota</th>
+                        <th>Descripción</th>
+                        <th>Categoría</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gasto in gastos_compartidos %}
+                    <tr data-id="{{ gasto.id }}">
+                        <td>{{ gasto.nombre }}</td>
+                        <td>{{ gasto.monto }}</td>
+                        <td>{{ gasto.fecha.strftime('%d/%m/%Y') if gasto.fecha else '' }}</td>
+                        <td>{{ gasto.cuotas }}</td>
+                        <td>{{ gasto.primera_cuota.strftime('%d/%m/%Y') if gasto.primera_cuota else '' }}</td>
+                        <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
+                        <td>{{ gasto.descripcion }}</td>
+                        <td>{{ gasto.categoria }}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif opcion == '3' %}
+            <h3>Gastos Propios</h3>
+            <table class="table table-hover table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Gasto</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Cuotas</th>
+                        <th>P. cuota</th>
+                        <th>U. cuota</th>
+                        <th>Descripción</th>
+                        <th>Categoría</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gasto in gastos_propios %}
+                    <tr data-id="{{ gasto.id }}">
+                        <td>{{ gasto.nombre }}</td>
+                        <td>{{ gasto.monto }}</td>
+                        <td>{{ gasto.fecha.strftime('%d/%m/%Y') if gasto.fecha else '' }}</td>
+                        <td>{{ gasto.cuotas }}</td>
+                        <td>{{ gasto.primera_cuota.strftime('%d/%m/%Y') if gasto.primera_cuota else '' }}</td>
+                        <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
+                        <td>{{ gasto.descripcion }}</td>
+                        <td>{{ gasto.categoria }}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif opcion == '4' %}
+            <h3>Todos los Gastos</h3>
+            <table class="table table-hover table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Gasto</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Cuotas</th>
+                        <th>P. cuota</th>
+                        <th>U. cuota</th>
+                        <th>Descripción</th>
+                        <th>Categoría</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gasto in gastos_todos %}
+                    <tr data-id="{{ gasto.id }}">
+                        <td>{{ gasto.nombre }}</td>
+                        <td>{{ gasto.monto }}</td>
+                        <td>{{ gasto.fecha.strftime('%d/%m/%Y') if gasto.fecha else '' }}</td>
+                        <td>{{ gasto.cuotas }}</td>
+                        <td>{{ gasto.primera_cuota.strftime('%d/%m/%Y') if gasto.primera_cuota else '' }}</td>
+                        <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
+                        <td>{{ gasto.descripcion }}</td>
+                        <td>{{ gasto.categoria }}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Seleccione una opción válida.</p>
+        {% endif %}
+    </section>
+</div>

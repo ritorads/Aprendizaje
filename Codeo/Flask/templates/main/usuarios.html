@@ -1,0 +1,64 @@
+{% extends "base/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Formulario para agregar un nuevo usuario -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center text-secondary">Agregar Nuevo Usuario</h3>
+            <form action="{{ url_for('usuarios.add_user_psqlflask') }}" method="POST">
+                <div class="form-group mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingresa el nombre" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="Ingresa el email" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="edad" class="form-label">Edad:</label>
+                    <input type="number" name="edad" id="edad" class="form-control" placeholder="Ingresa la edad" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Agregar Usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Edad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}  
+                        <tr>
+                            <td>{{ usuario.id }}</td>
+                            <td>{{ usuario.nombre }}</td>
+                            <td>{{ usuario.email }}</td>
+                            <td>{{ usuario.edad }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">No hay usuarios registrados.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+{% endblock %}

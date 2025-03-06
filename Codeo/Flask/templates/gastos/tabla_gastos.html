@@ -1,0 +1,23 @@
+<tbody id="gastos-tbody">
+    {% for gasto in gastos %}
+    <tr data-id="{{ gasto.id }}">
+        <td>{{ gasto.nombre }}</td>
+        <td>{{ gasto.monto }}</td>
+        <td>{{ gasto.fecha.strftime('%d/%m/%Y') if gasto.fecha else '' }}</td>
+        <td>{{ gasto.cuotas }}</td>
+        <td>{{ gasto.primera_cuota.strftime('%d/%m/%Y') if gasto.primera_cuota else '' }}</td>
+        <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
+        <td>{{ gasto.descripcion }}</td>
+        <td>{{ gasto.categoria }}</td>
+        <td>
+            <form action="{{ url_for('gastos.delete_gasto', id=gasto.id) }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="9" class="text-center">No hay Gastos registrados.</td>
+    </tr>
+    {% endfor %}
+</tbody>

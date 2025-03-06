@@ -1,0 +1,143 @@
+{% extends 'base/base.html' %}
+{% block title %}Gastos{% endblock %}
+{% block content %}
+<div class="container mt-3">
+    <h2>Gastos</h2>
+
+    <div class="parent">
+        <div class="div1">
+            <a class="btn btn-success" href="{{ url_for('gastos.gastos', vista='form') }}">Agregar Gasto</a>
+            <a class="btn btn-secondary" href="{{ url_for('gastos.gastos', vista='categorias') }}">Mis Gastos</a>
+            <a class="btn btn-primary" href="{{ url_for('gastos.gastos', vista='proyeccion') }}">Gastos</a>
+        </div>
+    </div>
+
+    <section id="gastos_content">
+        {% if vista == "form" %}
+            <!-- Formulario para agregar gasto -->
+            <form action="{{ url_for('gastos.add_gasto') }}" method="POST">
+                <label for="nombre">Nombre:</label>
+                <input type="text" name="nombre" id="nombre" required>
+            
+                <label for="monto">Monto:</label>
+                <input type="number" name="monto" id="monto" required>
+
+                <label for="descripcion">Descripción:</label>
+                <input type="text" name="descripcion" id="descripcion" required>
+            
+                <label for="cuotas">Cuotas:</label>
+                <input type="number" name="cuotas" id="cuotas" required>
+            
+                <label for="fecha">Fecha:</label>
+                <input type="date" name="fecha" id="fecha" required>
+                
+                <label for="categoria">Categoría:</label>
+                <select name="categoria" id="categoria" required>
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="btn btn-success">Agregar Gasto</button>
+            </form>
+
+        {% elif vista == "categorias" %}
+            <div class="container mt-3">
+                <h2>Gastos</h2>
+                
+                <!-- Select para filtrar -->
+                <div class="mb-3">
+                    <label for="categoria_filter" class="form-label">Filtrar por categoría:</label>
+                    <select name="categoria" id="categoria_filter" class="form-select">
+                        <option value="">Todos</option>
+                        {% for cat in categorias %}
+                        <option value="{{ cat.nombre }}" {% if selected_categoria == cat.nombre %}selected{% endif %}>
+                            {{ cat.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Tabla de gastos -->
+                <div class="table-responsivee">
+                    <table class="table table-hover table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Gasto</th>
+                                <th>Monto</th>
+                                <th>Fecha</th>
+                                <th>Cuotas</th>
+                                <th>P. cuota</th>
+                                <th>U. cuota</th>
+                                <th>Descripción</th>
+                                <th>Categoría</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gastos-tbody">
+                            {% for gasto in gastos %}
+                            <tr data-id="{{ gasto.id }}">
+                                <td>{{ gasto.nombre }}</td>
+                                <td>{{ gasto.monto }}</td>
+                                <td>{{ gasto.fecha.strftime('%d/%m/%Y') if gasto.fecha else '' }}</td>
+                                <td>{{ gasto.cuotas }}</td>
+                                <td>{{ gasto.primera_cuota.strftime('%d/%m/%Y') if gasto.primera_cuota else '' }}</td>
+                                <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
+                                <td>{{ gasto.descripcion }}</td>
+                                <td>{{ gasto.categoria }}</td>
+                                <td>
+                                    <a href="{{ url_for('gastos.delete_gasto', id=gasto.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="9" class="text-center">No hay Gastos registrados.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            {% block scripts %}
+            <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const selectElem = document.getElementById("categoria_filter");
+                selectElem.addEventListener("change", function() {
+                    const selectedValue = selectElem.value;
+                    // Llama a la función para filtrar sin recargar la página
+                    filtrarGastos(selectedValue);
+                });
+            });
+            
+            function filtrarGastos(selected) {
+                // Construir la URL del endpoint de filtrado, enviando la categoría como parámetro GET
+                let url = "{{ url_for('gastos.filtrar_gastos') }}" + "?categoria=" + encodeURIComponent(selected);
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error HTTP " + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        // Actualizar solo el tbody de la tabla con el fragmento HTML devuelto
+                        document.getElementById("gastos-tbody").innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        document.getElementById("gastos-tbody").innerHTML = "<tr><td colspan='9' class='text-center'>Error al cargar los datos.</td></tr>";
+                    });
+            }
+            </script>
+            {% endblock %}
+
+        
+        {% elif vista == "proyeccion" %}
+            {% include "gastos/proyeccion.html" %}
+        {% else %}
+            <p>Seleccione una opción.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
