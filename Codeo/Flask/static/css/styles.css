@@ -109,7 +109,7 @@ input[type="number"] {
 
 button,
 .btn {
-    width: 100%;
+    width: 30%;
     padding: 10px;
     background-color: #007bff;
     border: none;
@@ -202,3 +202,41 @@ footer {
     text-align: center;
     margin-bottom: 15px;
 }
+
+
+
+/* Botones del menú */
+.menu_gastos {
+    margin-top: 20px;
+}
+
+.menu_gastos button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.menu_gastos button:hover {
+    background-color: #0056b3;
+}
+
+/* Clase para ocultar el formulario dinámicamente */
+.hidden {
+    display: none;
+}
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    }
+    
+    .div1 { grid-area: 1 / 1 / 2 / 4; }

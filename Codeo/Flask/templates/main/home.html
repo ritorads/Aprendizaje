@@ -4,14 +4,7 @@
 
 {% block content %}
 
-<body>
-    <h1>Bienvenido, {{ user }}!</h1>
-    <p>
-        <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
-    </p>
-    <p>
-        <a href="{{ url_for('usuarios.usuarios_psqlflask') }}">Ver usuarios</a>
-    </p>
-</body>
+    <p>¿Qué deseas hacer hoy?</p>
+    
 
 {% endblock %}

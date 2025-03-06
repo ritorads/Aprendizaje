@@ -5,7 +5,8 @@ from models import db, User
 from routes.auth import auth_bp
 from routes.main import main_bp
 from routes.usuarios import usuarios_bp
-
+from routes.gastos import gastos_bp
+from routes.diario import diario_bp
 app = Flask(__name__)
 app.secret_key = "supersecreto"
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:0@localhost/flask_auth"
@@ -27,6 +28,8 @@ def load_user(user_id):
 app.register_blueprint(auth_bp)
 app.register_blueprint(main_bp)
 app.register_blueprint(usuarios_bp)
+app.register_blueprint(gastos_bp)
+app.register_blueprint(diario_bp)
 
 with app.app_context():
     db.create_all()  # Crea las tablas si no existen

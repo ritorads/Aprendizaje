@@ -2,29 +2,6 @@
 
 {% block content %}
 <div class="container mt-5">
-    <!-- Título de la página -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h2 class="text-center text-primary">Usuarios de la Base de Datos</h2>
-        </div>
-    </div>
-
-    <!-- Mensajes Flash -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="row mb-4">
-            <div class="col-12">
-                {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-    {% endwith %}
-
     <!-- Formulario para agregar un nuevo usuario -->
     <div class="row">
         <div class="col-12">
@@ -63,7 +40,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for usuario in usuarios %}
+                        {% for usuario in usuarios %}  
                         <tr>
                             <td>{{ usuario.id }}</td>
                             <td>{{ usuario.nombre }}</td>

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_required
+from flask_login import login_required,current_user
 from models import db, Usuario
 
 # Crear un Blueprint para las rutas de usuarios
@@ -13,7 +13,7 @@ def usuarios_psqlflask():
     usuarios = Usuario.query.all()
 
     # Renderiza la plantilla de usuarios
-    return render_template("main/usuarios.html", usuarios=usuarios)
+    return render_template("main/usuarios.html", usuarios=usuarios, user=current_user.username)
 
 # Ruta para agregar un nuevo usuario a la base de datos
 @usuarios_bp.route("/psqlflask/add_user", methods=["POST"])
