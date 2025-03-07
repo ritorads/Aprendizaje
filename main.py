@@ -11,7 +11,8 @@ app = Flask(__name__)
 app.secret_key = "supersecreto"
 import os
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_DATABASE_URI"] = postgresql://postgres:YPjtSNoWyaMhrcZVtOxIRQQcXjqymbQs@trolley.proxy.rlwy.net:57809/railway
+
 
 app.secret_key = os.getenv("SECRET_KEY", "default_secret_key")
 
