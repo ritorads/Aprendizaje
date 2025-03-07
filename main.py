@@ -9,8 +9,11 @@ from routes.gastos import gastos_bp
 from routes.diario import diario_bp
 app = Flask(__name__)
 app.secret_key = "supersecreto"
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:0@localhost/flask_auth"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+import os
+
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+
+app.secret_key = os.getenv("SECRET_KEY", "default_secret_key")
 
 # Inicializar SQLAlchemy
 db.init_app(app)
