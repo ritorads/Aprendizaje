@@ -37,5 +37,7 @@ app.register_blueprint(diario_bp)
 with app.app_context():
     db.create_all()  # Crea las tablas si no existen
 
+PORT = int(os.environ.get("PORT", 8080))  # Usa 8080 si no hay variable de entorno
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=PORT)
