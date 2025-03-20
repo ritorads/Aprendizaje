@@ -66,6 +66,9 @@ nav.navbar ul li a:hover {
     padding: 20px;
     background-color: #f8f9fa;
 }
+.container mt-4 {
+    overflow-x: scroll;
+}
 
 /* Tabla de usuarios */
 .table {
@@ -83,6 +86,10 @@ nav.navbar ul li a:hover {
 
 .table-hover tbody tr:hover {
     background-color: #f1f1f1;
+}
+
+.table-responsive {
+    overflow-x: scroll;
 }
 
 /* Estilos para Formulario */
