@@ -12,7 +12,7 @@ app.secret_key = "supersecreto"
 import os
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:YPjtSNoWyaMhrcZVtOxIRQQcXjqymbQs@trolley.proxy.rlwy.net:57809/railway"
-
+#direccion Postgre simulado en railway
 
 app.secret_key = os.getenv("SECRET_KEY", "default_secret_key")
 
@@ -26,7 +26,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 # Registrar blueprints
 app.register_blueprint(auth_bp)
@@ -40,5 +40,10 @@ with app.app_context():
 
 PORT = int(os.environ.get("PORT", 8080))  # Usa 8080 si no hay variable de entorno
 
+# Ejecutar en el host
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=PORT)
+
+# Ejecutar en local 
+# if __name__ == "__main__":
+#     app.run(debug=True)

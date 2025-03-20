@@ -109,7 +109,7 @@ input[type="number"] {
 
 button,
 .btn {
-    width: 30%;
+    width: 100%;
     padding: 10px;
     background-color: #007bff;
     border: none;
@@ -233,10 +233,14 @@ footer {
 
 .parent {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: 1fr;
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-    }
-    
-    .div1 { grid-area: 1 / 1 / 2 / 4; }
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas de igual tamaño */
+    gap: 10px; /* Espacio entre botones */
+    justify-content: center;
+    width: 100%;
+    max-width: 800px; /* Ajusta según necesidad */
+    margin: 10px auto; /* Centrado horizontal */
+}
+
+.div1 {
+    display: contents; /* Permite que los botones se alineen en la grid */
+}

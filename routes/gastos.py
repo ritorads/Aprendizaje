@@ -25,35 +25,52 @@ def calcular_facturacion(fecha: date, cuotas: int) -> date:
     ultima = primera + relativedelta(months=+(cuotas - 1))
     return primera,ultima
 
-@gastos_bp.route("/gastos" , methods=["GET"])
+# Nota: Podemos agregar una paginación a la vista de gastos
+@gastos_bp.route("/gastos", methods=["GET"])
 @login_required
 def gastos():
-    return render_template("gastos/gastos.html", 
-                           gastos = Gasto.query.filter_by(Id_usuario=current_user.id).all(),
-                           vista = request.args.get("vista", "visualizacion"),
-                           categorias = Categoria.query.all(),
-                           user=current_user.username)
+    # Definir los meses
+    meses = {
+        "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5, "Junio": 6,
+        "Julio": 7, "Agosto": 8, "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
+    }
 
+    # Obtener la categoría y el mes seleccionados
+    selected_categoria = request.args.get("categoria", "")
+    selected_mes = request.args.get("mes", "")
+    selected_year =  request.args.get("year", "")
 
-@gastos_bp.route("/gastos/filtrar", methods=["GET"])
-@login_required
-def filtrar_gastos():
-    selected = request.args.get("categoria")  # Ajusta si el param se llama 'categoria' o 'cadtegoria'
+    # Consulta base
+    query = Gasto.query.filter_by(Id_usuario=current_user.id)
+
+    # Filtrar por categoría si se seleccionó
+    if selected_categoria:
+        query = query.filter(Gasto.categoria == selected_categoria)
     
-    # Si se seleccionó una categoría, filtra por ella y por el usuario actual
-    if selected:
-        gastos_lista = Gasto.query.filter(
-            Gasto.Id_usuario == current_user.id,
-            Gasto.categoria == selected
-        ).all()
-    else:
-        # De lo contrario, muestra todos los gastos del usuario
-        gastos_lista = Gasto.query.filter_by(Id_usuario=current_user.id).all()
+    # Filtrar por mes si se seleccionó y es válido
+    if selected_mes and selected_mes in meses:
+        mes_numero = meses[selected_mes]  # Obtener el número del mes
+        if mes_numero:  # Solo aplicar el filtro si no es "Todos" (None)
+            query = query.filter(db.extract('month', Gasto.fecha) == mes_numero)
+    
+    if selected_year:
+        query = query.filter(db.extract('year', Gasto.fecha) == selected_year)
+        
+    # Ejecutar la consulta
+    gastos = query.all()
+    
+    categorias = Categoria.query.all()  # Obtener todas las categorías
 
-    # Renderiza el fragmento HTML (p. ej., la tabla o solo el tbody)
-    return render_template("gastos/tabla_gastos.html", gastos=gastos_lista)
-
-
+    return render_template(
+        "gastos/gastos.html",
+        gastos=gastos,
+        vista=request.args.get("vista", "visualizacion"),
+        meses=list(meses.keys()),  # Enviar los nombres de los meses al frontend
+        categorias=categorias,
+        selected_categoria=selected_categoria,
+        selected_mes=selected_mes,
+        user=current_user.username
+    )
 
 @gastos_bp.route("/add_gasto", methods=["POST"])
 @login_required
@@ -101,16 +118,18 @@ def proyeccion():
                            categorias=categorias, 
                            user=current_user.username)
 
+
 @gastos_bp.route("/delete_gasto/<int:id>", methods=["POST"])
 @login_required
 def delete_gasto(id):
     gasto = Gasto.query.get(id)
     if not gasto:
-        return redirect(url_for("gastos.gastos", vista = "categorias"))
+        return jsonify({"success": False, "error": "Gasto no encontrado"}), 404
+
     try:
         db.session.delete(gasto)
         db.session.commit()
-        return redirect(url_for("gastos.gastos", vista = "categorias"))
+        return jsonify({"success": True})
     except Exception as e:
         db.session.rollback()
-        return redirect(url_for("gastos.gastos", vista = "categorias"))
+        return jsonify({"success": False, "error": str(e)}), 500

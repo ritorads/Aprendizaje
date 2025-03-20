@@ -1,143 +1,221 @@
 {% extends 'base/base.html' %}
 {% block title %}Gastos{% endblock %}
 {% block content %}
-<div class="container mt-3">
-    <h2>Gastos</h2>
-
-    <div class="parent">
-        <div class="div1">
-            <a class="btn btn-success" href="{{ url_for('gastos.gastos', vista='form') }}">Agregar Gasto</a>
-            <a class="btn btn-secondary" href="{{ url_for('gastos.gastos', vista='categorias') }}">Mis Gastos</a>
-            <a class="btn btn-primary" href="{{ url_for('gastos.gastos', vista='proyeccion') }}">Gastos</a>
+    <div class="container mt-3">
+        <div class="parent">
+            <div class="div1">
+                <a class="btn btn-success" href="{{ url_for('gastos.gastos', vista='form') }}">Agregar Gasto</a>
+                <a class="btn btn-secondary" href="{{ url_for('gastos.gastos', vista='categorias') }}">Mis Gastos</a>
+                <a class="btn btn-primary" href="{{ url_for('gastos.gastos', vista='proyeccion') }}">Proyección</a>
+                <a class="btn btn-primary" href="{{ url_for('gastos.gastos', vista='proyeccion') }}">Ahorros</a>
+            </div>
         </div>
-    </div>
 
-    <section id="gastos_content">
-        {% if vista == "form" %}
-            <!-- Formulario para agregar gasto -->
-            <form action="{{ url_for('gastos.add_gasto') }}" method="POST">
-                <label for="nombre">Nombre:</label>
-                <input type="text" name="nombre" id="nombre" required>
-            
-                <label for="monto">Monto:</label>
-                <input type="number" name="monto" id="monto" required>
-
-                <label for="descripcion">Descripción:</label>
-                <input type="text" name="descripcion" id="descripcion" required>
-            
-                <label for="cuotas">Cuotas:</label>
-                <input type="number" name="cuotas" id="cuotas" required>
-            
-                <label for="fecha">Fecha:</label>
-                <input type="date" name="fecha" id="fecha" required>
+        <section id="gastos_content">
+            {% if vista == "form" %}
+                <!-- Formulario para agregar gasto -->
+                <form action="{{ url_for('gastos.add_gasto') }}" method="POST">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" name="nombre" id="nombre" required>
                 
-                <label for="categoria">Categoría:</label>
-                <select name="categoria" id="categoria" required>
-                    {% for categoria in categorias %}
-                        <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
-                    {% endfor %}
-                </select>
+                    <label for="monto">Monto:</label>
+                    <input type="number" name="monto" id="monto" required>
 
-                <button type="submit" class="btn btn-success">Agregar Gasto</button>
-            </form>
-
-        {% elif vista == "categorias" %}
-            <div class="container mt-3">
-                <h2>Gastos</h2>
+                    <label for="descripcion">Descripción:</label>
+                    <input type="text" name="descripcion" id="descripcion" required>
                 
-                <!-- Select para filtrar -->
-                <div class="mb-3">
-                    <label for="categoria_filter" class="form-label">Filtrar por categoría:</label>
-                    <select name="categoria" id="categoria_filter" class="form-select">
-                        <option value="">Todos</option>
-                        {% for cat in categorias %}
-                        <option value="{{ cat.nombre }}" {% if selected_categoria == cat.nombre %}selected{% endif %}>
-                            {{ cat.nombre }}
-                        </option>
+                    <label for="cuotas">Cuotas:</label>
+                    <input type="number" name="cuotas" id="cuotas" required>
+                
+                    <label for="fecha">Fecha:</label>
+                    <input type="date" name="fecha" id="fecha" required>
+                    
+                    <label for="categoria">Categoría:</label>
+                    <select name="categoria" id="categoria" required>
+                        {% for categoria in categorias %}
+                            <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
                         {% endfor %}
                     </select>
-                </div>
-                
-                <!-- Tabla de gastos -->
-                <div class="table-responsivee">
-                    <table class="table table-hover table-bordered">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Gasto</th>
-                                <th>Monto</th>
-                                <th>Fecha</th>
-                                <th>Cuotas</th>
-                                <th>P. cuota</th>
-                                <th>U. cuota</th>
-                                <th>Descripción</th>
-                                <th>Categoría</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="gastos-tbody">
-                            {% for gasto in gastos %}
-                            <tr data-id="{{ gasto.id }}">
-                                <td>{{ gasto.nombre }}</td>
-                                <td>{{ gasto.monto }}</td>
-                                <td>{{ gasto.fecha.strftime('%d/%m/%Y') if gasto.fecha else '' }}</td>
-                                <td>{{ gasto.cuotas }}</td>
-                                <td>{{ gasto.primera_cuota.strftime('%d/%m/%Y') if gasto.primera_cuota else '' }}</td>
-                                <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
-                                <td>{{ gasto.descripcion }}</td>
-                                <td>{{ gasto.categoria }}</td>
-                                <td>
-                                    <a href="{{ url_for('gastos.delete_gasto', id=gasto.id) }}" class="btn btn-danger btn-sm">Eliminar</a>
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="9" class="text-center">No hay Gastos registrados.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            {% block scripts %}
-            <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const selectElem = document.getElementById("categoria_filter");
-                selectElem.addEventListener("change", function() {
-                    const selectedValue = selectElem.value;
-                    // Llama a la función para filtrar sin recargar la página
-                    filtrarGastos(selectedValue);
-                });
-            });
-            
-            function filtrarGastos(selected) {
-                // Construir la URL del endpoint de filtrado, enviando la categoría como parámetro GET
-                let url = "{{ url_for('gastos.filtrar_gastos') }}" + "?categoria=" + encodeURIComponent(selected);
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error("Error HTTP " + response.status);
-                        }
-                        return response.text();
-                    })
-                    .then(html => {
-                        // Actualizar solo el tbody de la tabla con el fragmento HTML devuelto
-                        document.getElementById("gastos-tbody").innerHTML = html;
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        document.getElementById("gastos-tbody").innerHTML = "<tr><td colspan='9' class='text-center'>Error al cargar los datos.</td></tr>";
-                    });
-            }
-            </script>
-            {% endblock %}
 
+                    <button type="submit" class="btn btn-success">Agregar Gasto</button>
+                </form>
+
+            {% elif vista == "categorias" %}
+                <div class="container mt-4">
+                    <div class="mb-3">
+                        <label for="categoria_filter" class="form-label">Filtrar por categoría:</label>
+                        <select name="categoria" id="categoria_filter" class="form-select" onchange="filtrarPorCategoria()">
+                            <option value="">Todos</option>
+                            {% for cat in categorias %}
+                            <option value="{{ cat.nombre }}" {% if selected_categoria == cat.nombre %}selected{% endif %}>
+                                {{ cat.nombre }}
+                            </option>
+                            {% endfor %}
+                        </select>
+
+                        <label for="month_filter" class="form-label">Filtrar por Mes:</label>
+                        <select name="mes" id="month_filter" class="form-select" onchange="filtrarPorMes()">
+                            <option value="">Todos</option>
+                            {% for mes in meses %}
+                                <option value="{{ mes }}" {% if selected_mes == mes %}selected{% endif %}>{{ mes }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Tabla de gastos -->
+                    <div class="table-responsivee">
+                        <table class="table table-hover table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Gasto</th>
+                                    <th>Monto</th>
+                                    <th>Fecha</th>
+                                    <th>Cuotas</th>
+                                    <th>P. cuota</th>
+                                    <th>U. cuota</th>
+                                    <th>Descripción</th>
+                                    <th>Categoría</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gastos-tbody">
+                                {% for gasto in gastos %}
+                                <tr data-id="{{ gasto.id }}">
+                                    <td>{{ gasto.nombre }}</td>
+                                    <td>{{ gasto.monto }}</td>
+                                    <td>{{ gasto.fecha.strftime('%d/%m/%Y') if gasto.fecha else '' }}</td>
+                                    <td>{{ gasto.cuotas }}</td>
+                                    <td>{{ gasto.primera_cuota.strftime('%d/%m/%Y') if gasto.primera_cuota else '' }}</td>
+                                    <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
+                                    <td>{{ gasto.descripcion }}</td>
+                                    <td>{{ gasto.categoria }}</td>
+                                    <td>
+                                        <button onclick="deleteGasto({{ gasto.id }})" class="btn btn-danger btn-sm">Eliminar</button>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="9" class="text-center">No hay Gastos registrados.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            {% elif vista == "proyeccion" %}
+                <div class="container mt-5">
+                    <h1> Proyección de Gastos Anuales Mensuales</h1>
+                    <div class="mb-3">
+                        <label for="year-filter" class="form-label">Filtrar por Año:</label>
+                        <select name="year" id="year-filter" class="form-select" onchange="filtrarPorAño()">
+                            <option value="">Todos</option>
+                            {% for year in range(2021, 2026) %}
+                                <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="container mt-4">
+                        <table class="table table-hover table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th> Gasto </th>
+                                    <th> Fecha </th>
+                                    <th> Cuotas </th>
+                                    {% for mes in meses %}
+                                        <th>{{ mes }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for gasto in gastos %}
+                                    <tr>
+                                        <th>{{ gasto.nombre }}</th>
+                                        <th>{{ gasto.fecha.strftime('%d/%m/%Y') }}</th>
+                                        <th>{{ gasto.cuotas }}</th>
+                                        {% set valor_cuota = gasto.monto / gasto.cuotas %}
+                                        {% set mes_inicio = gasto.primera_cuota.strftime('%m') | int %}
+                                        
+                                        {% for mes in meses %}
+                                            {% set mes_actual = meses.index(mes) + 1 %}
+                                            {% if mes_actual >= mes_inicio and mes_actual < mes_inicio + gasto.cuotas %}
+                                                <td>{{ valor_cuota | round(2) }}</td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+            {% block scripts %}
+                <script>
+                    function filtrarPorCategoria() {
+                        const select = document.getElementById("categoria_filter");
+                        const categoriaSeleccionada = select.value;
+
+                        // Crear la URL para filtrar
+                        const nuevaURL = new URL(window.location.href);
+                        nuevaURL.searchParams.set("categoria", categoriaSeleccionada);
+
+                        // Redirigir a la nueva URL
+                        window.location.href = nuevaURL.toString();
+                    }
+
+                    function filtrarPorMes() {
+                        const select = document.getElementById("month_filter");
+                        const mesSeleccionado = select.value;
+
+                        const nuevaURL = new URL(window.location.href);
+                        nuevaURL.searchParams.set("mes", mesSeleccionado);
+
+                        window.location.href = nuevaURL.toString();
+                    }
+
+                    function filtrarPorAño() {
+                        const select = document.getElementById("year-filter");
+                        const year_selected = select.value;
+
+                        const nuevaURL = new URL(window.location.href);
+                        nuevaURL.searchParams.set("year", year_selected);
+                        window.location.href = nuevaURL.toString();
+                    }
+
+                    function deleteGasto(id) {
+                        if (confirm("¿Estás seguro de eliminar este gasto?")) {
+                            fetch(`/delete_gasto/${id}`, {
+                                method: "POST", 
+                                headers: {
+                                    "Content-Type": "application/json"
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    let row = document.querySelector(`tr[data-id='${id}']`);
+                                    if (row) {
+                                        row.remove();
+                                    }
+                                } else {
+                                    alert("Error: " + data.error);
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error:", error);
+                                alert("Error al eliminar el gasto");
+                            });
+                        }
+                    }
+
+                </script>
+
+            {% endblock %}
+        </section>
         
-        {% elif vista == "proyeccion" %}
-            {% include "gastos/proyeccion.html" %}
-        {% else %}
-            <p>Seleccione una opción.</p>
-        {% endif %}
-    </section>
-</div>
+    </div>
 {% endblock %}

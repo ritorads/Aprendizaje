@@ -34,6 +34,13 @@
                 <li><a href="{{ url_for('auth.register') }}">Registrarse</a></li>
             {% endif %}
         </ul>
+
+       <!--Current user at the end--> 
+        <div class="current_user">
+            {% if current_user.is_authenticated %}
+                <p>{{ current_user.username }}</p>
+            {% endif %}
+        </div>
     </nav>
 
     {% block scripts %}
@@ -59,8 +66,6 @@
     
     <!-- Contenido principal de la página -->
     <div class="content">
-        <h1>Bienvenido, {{ user }}!</h1>
-
         {% block content %}
         {% endblock %}
     </div>
