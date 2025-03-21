@@ -26,7 +26,6 @@ h1, h2 {
 }
 
 a {
-    color: #007bff;
     text-decoration: none;
 }
 
@@ -54,7 +53,6 @@ nav.navbar ul li {
 nav.navbar ul li a {
     color: white;
     text-decoration: none;
-    font-weight: bold;
 }
 
 nav.navbar ul li a:hover {
@@ -70,27 +68,74 @@ nav.navbar ul li a:hover {
     overflow-x: scroll;
 }
 
-/* Tabla de usuarios */
-.table {
-    width: 100%;
-    margin-bottom: 20px;
+/* Estilo general para todas las tablas */
+table {
+    font-family: Arial, sans-serif;
     border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    color: #333; /* Color base uniforme para todo el texto */
 }
 
-.table th,
-.table td {
+/* Encabezados de las tablas */
+table thead th {
+    background-color: #f4f4f4;
+    color: #333; /* Color uniforme para encabezados */
+    text-align: center;
+    padding: 12px;
+    border-bottom: 2px solid #ddd;
+}
+
+/* Celdas de las tablas */
+table td, table th {
     padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
 }
 
-.table-hover tbody tr:hover {
+/* Filas alternas */
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Efecto hover para filas */
+table tbody tr:hover {
     background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
 }
 
-.table-responsive {
-    overflow-x: scroll;
+/* Estilo para celdas vacías */
+table td.empty {
+    background-color: #f4f4f4;
+    color: #bbb; /* Color gris claro para celdas vacías */
+    font-style: italic;
 }
+
+/* Botones de acción */
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+
+
+
+
+
 
 /* Estilos para Formulario */
 form {

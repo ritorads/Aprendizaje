@@ -6,6 +6,12 @@ from dateutil.relativedelta import relativedelta
 
 gastos_bp = Blueprint('gastos', __name__)
 
+meses = {
+        "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5, "Junio": 6,
+        "Julio": 7, "Agosto": 8, "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
+    }
+
+
 def calcular_facturacion(fecha: date, cuotas: int) -> date:
     dia = fecha.day
     mes = fecha.month
@@ -30,15 +36,15 @@ def calcular_facturacion(fecha: date, cuotas: int) -> date:
 @login_required
 def gastos():
     # Definir los meses
-    meses = {
-        "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5, "Junio": 6,
-        "Julio": 7, "Agosto": 8, "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
-    }
-
+    
     # Obtener la categoría y el mes seleccionados
+    selected_vista=request.args.get("vista", "visualizacion")
+
     selected_categoria = request.args.get("categoria", "")
     selected_mes = request.args.get("mes", "")
     selected_year =  request.args.get("year", "")
+    order_field = request.args.get("order_field", "fecha")  # Campo por defecto: "fecha"
+    order_direction = request.args.get("order_direction", "asc")  # Dirección por defecto: "asc"
 
     # Consulta base
     query = Gasto.query.filter_by(Id_usuario=current_user.id)
@@ -55,20 +61,28 @@ def gastos():
     
     if selected_year:
         query = query.filter(db.extract('year', Gasto.fecha) == selected_year)
-        
-    # Ejecutar la consulta
-    gastos = query.all()
+
+    # Aplicar orden dinámico
+    if order_field and order_direction == "asc":
+        query = query.order_by(getattr(Gasto, order_field).asc())
+    elif order_field and order_direction == "dsc":
+        query = query.order_by(getattr(Gasto, order_field).desc())
+    
+    gastos = query.all()  # Obtener todos los gastos
     
     categorias = Categoria.query.all()  # Obtener todas las categorías
 
     return render_template(
         "gastos/gastos.html",
+        vista=selected_vista,
         gastos=gastos,
-        vista=request.args.get("vista", "visualizacion"),
-        meses=list(meses.keys()),  # Enviar los nombres de los meses al frontend
-        categorias=categorias,
+        meses=list(meses.keys()),
         selected_categoria=selected_categoria,
         selected_mes=selected_mes,
+        selected_year=selected_year,
+        order_field=order_field,
+        order_direction=order_direction,
+        categorias=categorias,
         user=current_user.username
     )
 
@@ -107,16 +121,6 @@ def add_gasto():
         db.session.rollback()
 
     return redirect(url_for("gastos.gastos", vista="visualizacion"))
-
-@gastos_bp.route("/gastos/proyeccion", methods=["GET"])
-@login_required
-def proyeccion():
-    gastos_list = Gasto.query.all()
-    categorias = Categoria.query.all()
-    return render_template("gastos/proyeccion.html", 
-                           gastos=gastos_list, 
-                           categorias=categorias, 
-                           user=current_user.username)
 
 
 @gastos_bp.route("/delete_gasto/<int:id>", methods=["POST"])

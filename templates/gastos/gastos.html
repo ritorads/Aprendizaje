@@ -1,6 +1,7 @@
 {% extends 'base/base.html' %}
 {% block title %}Gastos{% endblock %}
 {% block content %}
+
     <div class="container mt-3">
         <div class="parent">
             <div class="div1">
@@ -64,21 +65,41 @@
 
                     <!-- Tabla de gastos -->
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered">
-                            <thead class="thead-light">
+                        <table >
+                            <thead >
                                 <tr>
-                                    <th>Gasto</th>
-                                    <th>Monto</th>
-                                    <th>Fecha</th>
-                                    <th>Cuotas</th>
-                                    <th>P. cuota</th>
-                                    <th>U. cuota</th>
-                                    <th>Descripción</th>
-                                    <th>Categoría</th>
-                                    <th>Acciones</th>
+                                    <td>
+                                        <a href="{{ url_for('gastos.gastos', vista=vista, categoria=selected_categoria, mes=selected_mes, year=selected_year, order_field='nombre', order_direction=('dsc' if order_field == 'nombre' and order_direction == 'asc' else 'asc')) }}">
+                                            Gasto {% if order_field == 'nombre' %}{% if order_direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('gastos.gastos', vista=vista, categoria=selected_categoria, mes=selected_mes, year=selected_year, order_field='monto', order_direction=('dsc' if order_field == 'monto' and order_direction == 'asc' else 'asc')) }}">
+                                            Monto {% if order_field == 'monto' %}{% if order_direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('gastos.gastos', vista=vista, categoria=selected_categoria, mes=selected_mes, year=selected_year, order_field='fecha', order_direction=('dsc' if order_field == 'fecha' and order_direction == 'asc' else 'asc')) }}">
+                                            Fecha {% if order_field == 'fecha' %}{% if order_direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('gastos.gastos', vista=vista, categoria=selected_categoria, mes=selected_mes, year=selected_year, order_field='cuotas', order_direction=('dsc' if order_field == 'cuotas' and order_direction == 'asc' else 'asc')) }}">
+                                            Cuotas {% if order_field == 'cuotas' %}{% if order_direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        Primera Cuota
+                                    </td>
+                                    <td>
+                                        Última Cuota
+                                    </td>
+                                    <td>Descripción</td>
+                                    <td>Categoría</td>
+                                    <td class="text-center">Acciones</td>
                                 </tr>
                             </thead>
-                            <tbody id="gastos-tbody">
+                            <tbody>
                                 {% for gasto in gastos %}
                                 <tr data-id="{{ gasto.id }}">
                                     <td>{{ gasto.nombre }}</td>
@@ -89,7 +110,7 @@
                                     <td>{{ gasto.ultima_cuota.strftime('%d/%m/%Y') if gasto.ultima_cuota else '' }}</td>
                                     <td>{{ gasto.descripcion }}</td>
                                     <td>{{ gasto.categoria }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <button onclick="deleteGasto({{ gasto.id }})" class="btn btn-danger btn-sm">Eliminar</button>
                                     </td>
                                 </tr>
@@ -101,7 +122,8 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div>                    
+                    
 
             {% elif vista == "proyeccion" %}
                 <div class="container mt-5">
@@ -117,23 +139,36 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered">
-                            <thead class="thead-light">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <th> Gasto </th>
-                                    <th> Fecha </th>
-                                    <th> Cuotas </th>
+                                    <td>
+                                        <a href="{{ url_for('gastos.gastos', vista=vista, year=selected_year, order_field='nombre', order_direction=('dsc' if order_field == 'nombre' and order_direction == 'asc' else 'asc')) }}">
+                                            Gasto {% if order_field == 'nombre' %}{% if order_direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('gastos.gastos', vista=vista, year=selected_year, order_field='fecha', order_direction=('dsc' if order_field == 'fecha' and order_direction == 'asc' else 'asc')) }}">
+                                            Fecha {% if order_field == 'fecha' %}{% if order_direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('gastos.gastos', vista=vista, year=selected_year, order_field='cuotas', order_direction=('dsc' if order_field == 'cuotas' and order_direction == 'asc' else 'asc')) }}">
+                                            Cuotas {% if order_field == 'cuotas' %}{% if order_direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+                                        </a>
+                                    </td>
                                     {% for mes in meses %}
-                                        <th>{{ mes }}</th>
+                                        <td>{{ mes }}</td>
                                     {% endfor %}
                                 </tr>
                             </thead>
-                            <tbody>
+                            
+                            <tbody id="gastos-tbody">
                                 {% for gasto in gastos %}
                                     <tr>
-                                        <th>{{ gasto.nombre }}</th>
-                                        <th>{{ gasto.fecha.strftime('%d/%m/%Y') }}</th>
-                                        <th>{{ gasto.cuotas }}</th>
+                                        <td>{{ gasto.nombre }}</td>
+                                        <td>{{ gasto.fecha.strftime('%d/%m/%Y') }}</td>
+                                        <td>{{ gasto.cuotas }}</td>
                                         {% set valor_cuota = gasto.monto / gasto.cuotas %}
                                         {% set mes_inicio = gasto.primera_cuota.strftime('%m') | int %}
                                         
@@ -186,6 +221,26 @@
                         window.location.href = nuevaURL.toString();
                     }
 
+                    function ordenarPorFecha() {
+                         // Alternar entre ascendente y descendente
+                        currentOrder = currentOrder === "asc" ? "dsc" : "asc";
+
+                        const tbody = document.getElementById("proyeccion-tbody");
+                        const rows = Array.from(tbody.querySelectorAll("tr"));
+
+                        // Ordenar las filas según la fecha
+                        rows.sort((a, b) => {
+                            const dateA = new Date(a.dataset.fecha); // Suponiendo que el atributo data-fecha tiene la fecha
+                            const dateB = new Date(b.dataset.fecha);
+
+                            return currentOrder === "asc" ? dateA - dateB : dateB - dateA;
+                        });
+
+                        // Vaciar y volver a agregar las filas ordenadas
+                        tbody.innerHTML = "";
+                        rows.forEach(row => tbody.appendChild(row));
+                    }
+                                        
                     function deleteGasto(id) {
                         if (confirm("¿Estás seguro de eliminar este gasto?")) {
                             fetch(`/delete_gasto/${id}`, {
